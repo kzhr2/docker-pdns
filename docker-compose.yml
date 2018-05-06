@@ -1,19 +1,34 @@
-version: "2"
+version: "3.0"
+
 services:
   pdns:
-    build: . 
+    build: .
     #image: secns/pdns
     ports:
     - "53:53"
     - "53:53/udp"
-    - "8080:80"
+    - "8180:80"
     environment:
-    - PDNS_ALLOW_AXFR_IPS=127.0.0.1
-    - PDNS_DISTRIBUTOR_THREADS=3
-    - PDNS_CACHE_TTL=20
-    - PDNS_RECURSIVE_CACHE_TTL=10
-    - DB_ENV_MYSQL_ROOT_PASSWORD=changeme
+      PDNS_ALLOW_AXFR_IPS: 127.0.0.1
+      PDNS_DISTRIBUTOR_THREADS: 3
+      PDNS_CACHE_TTL: 20
+      PDNS_RECURSIVE_CACHE_TTL: 10
+      DB_ENV_MYSQL_ROOT_PASSWORD: changeme
+      PDNS_API: yes
+      PDNS_API_KEY: "Yr:RhhY>7ZU7hAj.-liIZ9x6T:>c&:;Z"
+      PDNS_WEBSERVER: yes
+      PDNS_WEBSERVER_ALLOW_FROM: 192.168.0.1/24
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ap-data:/etc/powerdns
   db:
     image: mysql
     environment:
-    - MYSQL_ROOT_PASSWORD=changeme
+      MYSQL_ROOT_PASSWORD: changeme
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - db-data:/var/lib/mysql
+
+volumes:
+  ap-data:
+  db-data:

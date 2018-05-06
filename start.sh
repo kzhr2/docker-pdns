@@ -15,6 +15,11 @@ PDNS_RECURSOR=${PDNS_RECURSOR:-no}
 POWERADMIN_HOSTMASTER=${POWERADMIN_HOSTMASTER:-}
 POWERADMIN_NS1=${POWERADMIN_NS1:-}
 POWERADMIN_NS2=${POWERADMIN_NS2:-}
+PDNS_API=${PDNS_API:-no}
+PDNS_API_KEY=${PDNS_API_KEY:-changeme}
+PDNS_API_LOGFILE=${PDNS_API_LOGFILE:-/var/log/pdns.log}
+PDNS_WEBSERVER=${PDNS_WEBSERVER:-no}
+PDNS_WEBSERVER_ALLOW_FROM=${PDNS_WEBSERVER_ALLOW_FROM:-0.0.0.0/0,::/0}
 
 until nc -z ${MYSQL_HOST} ${MYSQL_PORT}; do
     echo "$(date) - waiting for mysql..."
@@ -37,6 +42,7 @@ sed -i "s/{{MYSQL_PORT}}/${MYSQL_PORT}/" /etc/powerdns/pdns.d/pdns.local.gmysql.
 sed -i "s/{{MYSQL_USER}}/${MYSQL_USER}/" /etc/powerdns/pdns.d/pdns.local.gmysql.conf
 sed -i "s/{{MYSQL_PASSWORD}}/${MYSQL_PASSWORD}/" /etc/powerdns/pdns.d/pdns.local.gmysql.conf
 sed -i "s/{{MYSQL_DB}}/${MYSQL_DB}/" /etc/powerdns/pdns.d/pdns.local.gmysql.conf
+
 sed -i "s/{{PDNS_ALLOW_AXFR_IPS}}/${PDNS_ALLOW_AXFR_IPS}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_MASTER}}/${PDNS_MASTER}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_SLAVE}}/${PDNS_SLAVE}/" /etc/powerdns/pdns.conf
@@ -45,6 +51,13 @@ sed -i "s/{{PDNS_DISTRIBUTOR_THREADS}}/${PDNS_DISTRIBUTOR_THREADS}/" /etc/powerd
 sed -i "s/{{PDNS_RECURSIVE_CACHE_TTL}}/${PDNS_RECURSIVE_CACHE_TTL}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_ALLOW_RECURSION}}/${PDNS_ALLOW_RECURSION}/" /etc/powerdns/pdns.conf
 sed -i "s/{{PDNS_RECURSOR}}/${PDNS_RECURSOR}/" /etc/powerdns/pdns.conf
+
+sed -i "s/{{PDNS_API}}/${PDNS_API}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_API_KEY}}/${PDNS_API_KEY}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_API_LOGFILE}}/${PDNS_API_LOGFILE}/" /etc/powerdns/pdns.conf
+
+sed -i "s/{{PDNS_WEBSERVER}}/${PDNS_WEBSERVER}/" /etc/powerdns/pdns.conf
+sed -i "s/{{PDNS_WEBSERVER_ALLOW_FROM}}/${PDNS_WEBSERVER_ALLOW_FROM}/" /etc/powerdns/pdns.conf
 
 ### POWERADMIN
 sed -i "s/{{MYSQL_HOST}}/${MYSQL_HOST}/" /var/www/html/inc/config.inc.php
@@ -57,4 +70,3 @@ sed -i "s/{{POWERADMIN_NS1}}/${POWERADMIN_NS1}/" /var/www/html/inc/config.inc.ph
 sed -i "s/{{POWERADMIN_NS2}}/${POWERADMIN_NS2}/" /var/www/html/inc/config.inc.php
 
 exec /usr/bin/supervisord
-
